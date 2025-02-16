@@ -1,5 +1,3 @@
-# bot.py
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, filters
 from telegram import ReplyKeyboardRemove
 from config import TOKEN, LANGUAGES, DIFFICULTIES
@@ -120,7 +118,7 @@ def main():
     dp.add_handler(CommandHandler('start', start))
 
     # Сообщения
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+    dp.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Запуск бота
     updater.start_polling()
