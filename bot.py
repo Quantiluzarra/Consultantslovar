@@ -1,6 +1,6 @@
 # bot.py
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters
 from telegram import ReplyKeyboardRemove
 from config import TOKEN, LANGUAGES, DIFFICULTIES
 from game import Game
