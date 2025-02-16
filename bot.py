@@ -1,7 +1,9 @@
 import asyncio
+import random
 from aiogram import Bot, Dispatcher, types, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-import random
+from nltk.corpus import wordnet
+from wordfreq import word_frequency
 
 # Установка токена бота
 TOKEN = '7881659124:AAH61KoBUM5PZlcf3BY5BaQAcI3FS0dpHKk'
@@ -15,29 +17,24 @@ dp = Dispatcher(bot, storage=storage)
 users_data = {}
 
 # Поддерживаемые языки
-LANGUAGES = ['ru', 'en']
+LANGUAGES = ['en', 'ru']
 
 # Уровни сложности
 DIFFICULTIES = ['Легкий', 'Средний', 'Тяжелый']
 
-# Функция для получения случайного слова
+# Генерация случайного слова
 def get_random_word(language):
-    if language == 'ru':
-        word_list = [w.strip().lower() for w in open("russian_words.txt", encoding='utf-8')]
-    elif language == 'en':
-        word_list = [w.strip().lower() for w in open("english_words.txt")]
-    else:
-        word_list = []
-    return random.choice(word_list)
+    words = list(wordnet.words(lang=language))
+    return random.choice(words)
 
-# Функция для генерации подсказок
+# Генерация подсказок
 def generate_hint(word):
     hints = [
         f"Слово начинается на букву: {word[0].upper()}",
         f"Слово заканчивается на букву: {word[-1].upper()}",
         f"Длина слова: {len(word)} букв",
         f"В слове есть буква: {random.choice(word[1:-1]).upper()}",
-        f"Сумма буквенных кодов слова: {sum([ord(c) for c in word])}"
+        f"Частота слова в языке: {word_frequency(word, 'ru') if len(word) > 1 else 'неизвестно'}"
     ]
     return random.choice(hints)
 
@@ -45,7 +42,7 @@ def generate_hint(word):
 @dp.message_handler(commands=['start'])
 async def start_game(message: types.Message):
     users_data[message.from_user.id] = {
-        'language': 'ru',
+        'language': 'en',
         'difficulty': 'Средний',
         'games_played': 0,
         'wins': 0,
@@ -163,4 +160,7 @@ async def show_profile(message: types.Message):
 
 # Запуск бота
 if __name__ == '__main__':
+    import nltk
+    nltk.download('omw-1.4')
+    nltk.download('wordnet')
     executor.start_polling(dp, skip_updates=True)
