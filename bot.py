@@ -111,7 +111,7 @@ def process_guess(update, context, guess):
         )
 
 def main():
-    updater = Updater(TOKEN, use_context=True)
+    updater = Updater(TOKEN)
     dp = updater.dispatcher
 
     # Команды
